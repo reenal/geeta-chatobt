@@ -7,7 +7,8 @@ import os
 load_dotenv()
 api_key = os.getenv("GOOGLE_API_KEY")
 GoogleGenerativeAIEmbeddings.api_key = api_key
-
+os.environ['LANGCHAIN_TRACING_V2'] = 'true'
+os.environ['LANGCHAIN_API_KEY'] = os.getenv('LANGCHAIN_API_KEY')
 
 # text = get_file_text()
 # text_chunks = get_text_chunks(text)
@@ -17,6 +18,7 @@ embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
 
 def user_input(user_question):
+    print(user_question)
 
     # Load the vector store
     new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
@@ -28,11 +30,19 @@ def user_input(user_question):
     chain = get_conversational_chain()
     
     # Run the chain with the retrieved context and the user's question
-    response = chain.run({"context": docs, "question": user_question})
+    response = chain.invoke({"context": docs, "question": user_question})
 
     # Create a container to display the response
     with st.container():
         st.write("Reply: ", response)
+        
+        st.write("Generationg img for you Arjun...")
+        
+        img_prompt = text_to_img_prompt(response=response)
+        
+        image = img_generator(img_prompt=img_prompt)
+        
+        st.image(image)
 
     # Predict the next question
     next_question = predict_next_question(user_question)

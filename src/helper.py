@@ -1,11 +1,12 @@
 from pypdf import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-from langchain.vectorstores import FAISS
+from langchain_community.vectorstores import FAISS
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
 from src.prompt import *
 from langchain.chains import LLMChain
+from langchain_core.output_parsers import StrOutputParser
 
 
 
@@ -39,7 +40,8 @@ def get_conversational_chain():
     prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
     
     # Create the conversational chain
-    return LLMChain(llm=model, prompt=prompt)
+    chain = prompt | model | StrOutputParser()
+    return chain
 
 # Function to predict the next question
 def predict_next_question(user_question):
@@ -53,9 +55,50 @@ def predict_next_question(user_question):
     
     # Create the prompt and LLM chain
     prompt = PromptTemplate(template=prompt_template, input_variables=["user_question"])
-    chain = LLMChain(llm=model, prompt=prompt)
+    
+    chain = prompt | model | StrOutputParser()
     
     # Use the chain to predict the next question
-    next_question = chain.run(user_question)
+    next_question = chain.invoke(user_question)
     
     return next_question
+
+
+def text_to_img_prompt(response):
+    # Create a prompt template for predicting the next question
+    prompt_template = """
+    Based on the response extract the Example text from the: {response}, write a prompt convert text-to-image generation llm diffusion model
+    """
+
+    # Define the language model
+    model = ChatGoogleGenerativeAI(model="models/gemini-1.5-pro-latest", temperature=0.3)
+    
+    # Create the prompt and LLM chain
+    prompt = PromptTemplate(template=prompt_template, input_variables=["response"])
+    
+    chain = prompt | model | StrOutputParser()
+    
+    # Use the chain to predict the next question
+    text_to_img = chain.invoke(response)
+    
+    return text_to_img
+
+
+def img_generator(img_prompt):
+    import requests
+
+    API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
+    headers = {"Authorization": "Bearer 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"}
+
+    def query(payload):
+        response = requests.post(API_URL, headers=headers, json=payload)
+        return response.content
+    image_bytes = query({
+        "inputs": img_prompt,
+    })
+    # You can access the image with PIL.Image for example
+    import io
+    from PIL import Image
+    image = Image.open(io.BytesIO(image_bytes))
+    
+    return image
