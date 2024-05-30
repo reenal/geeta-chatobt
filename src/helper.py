@@ -19,7 +19,7 @@ def get_file_text():
 
 # Function to split text into chunks
 def get_text_chunks(text):
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=200)
     return text_splitter.split_text(text)
 
 # Function to load or create a vector store from the text chunks
