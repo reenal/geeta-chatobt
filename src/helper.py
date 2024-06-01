@@ -106,6 +106,8 @@ def user_input(user_question):
     # Display the predicted next question in the sidebar
     st.sidebar.header("Predicted Next Question")
     st.sidebar.write(next_question)
+    
+    return response
 
 # Function to predict the next question
 def predict_next_question(user_question):

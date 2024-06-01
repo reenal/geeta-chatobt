@@ -1,9 +1,14 @@
 from pymongo.mongo_client import MongoClient
 import bcrypt
+from src.registration import *
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # MongoDB connection
-uri = "mongodb+srv://parth:parth123@cluster0.1ngdui1.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-client = MongoClient(uri)
+mongo_uri = os.getenv('MONGO_URI')
+client = MongoClient(mongo_uri)
 
 try:
     client.admin.command('ping')
@@ -14,3 +19,15 @@ except Exception as e:
 # Access the database and collection
 db = client["user_database"]
 users_collection = db["users"]
+
+
+db = client["chat_with_gita_db"]  # Database name
+collection = db["questions_responses"]  # Collection name
+
+
+def store_in_mongodb(question, response):
+    document = {
+        "question": question,
+        "response": response
+    }
+    collection.insert_one(document)
