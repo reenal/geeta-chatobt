@@ -76,12 +76,16 @@ def user_input(user_question):
    
     # Run the chain with the retrieved context and the user's question
     response = chain.invoke({"context": docs, "question": user_question})
+    print(response)
    
     parts = response.strip().split("\n\n")
     reply = parts[0]
     shlok = parts[1].replace("Shlok:  ", "")
     meaning = parts[2].replace("Meaning: ", "")
     example = parts[3].replace("Example: ", "")
+    
+    inject_css()
+
    
 
     # Create a container to display the response
