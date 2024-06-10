@@ -7,6 +7,9 @@ from src.registration import *
 from src.mongo import *
 from pages import *
 from streamlit_option_menu import option_menu
+from src.logger import *
+
+logging.info('all imports successfully initiatied..')
 
 load_dotenv()
 api_key = os.getenv("GOOGLE_API_KEY")
@@ -30,15 +33,21 @@ def main():
     
     with col1:
         if st.button("Register"):
+            logging.info("user press the register button")
             st.switch_page('pages/registration.py')
     
     with col2:
         if st.button("Login"):
+            logging.info("user press the login button")
             st.switch_page('pages/login.py')
             
     with col3:
         if st.button("Chat"):
+            logging.info("user press the chat button")
             st.switch_page('pages/chat.py')
+            
+    logging.info('homepage load successfully')
+
 
 if __name__ == "__main__":
     main()

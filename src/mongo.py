@@ -3,6 +3,7 @@ import bcrypt
 from src.registration import *
 import os
 from dotenv import load_dotenv
+from src.logger import *
 
 load_dotenv()
 
@@ -11,9 +12,12 @@ mongo_uri = os.getenv('MONGO_URI')
 client = MongoClient(mongo_uri)
 
 try:
+    logging.info('Connecting to mongodb server')
     client.admin.command('ping')
     print("Pinged your deployment. You successfully connected to MongoDB!")
+    logging.info('connected successfully to mogodb server')
 except Exception as e:
+    logging.error('error while connecting mogodb')
     print(e)
 
 # Access the database and collection
