@@ -21,9 +21,8 @@ st.set_page_config(
     page_title="Chat with Gita",
     page_icon=":om:",
     layout="centered",
-    initial_sidebar_state="auto",
+    initial_sidebar_state="collapsed",
 )
-
 def main():
     
     st.header("Chat with Bhagwat Geet 💭")
@@ -42,9 +41,9 @@ def main():
             st.switch_page('pages/login.py')
             
     with col3:
-        if st.button("Chat"):
+        if st.button("Guest Chat"):
             logging.info("user press the chat button")
-            st.switch_page('pages/chat.py')
+            st.switch_page('pages/guest_chat.py')
             
     logging.info('homepage load successfully')
 

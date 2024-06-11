@@ -64,9 +64,19 @@ def login_user(email, password):
         user = users_collection.find_one({"email": email})
         if user and verify_password(user["password"], password):
             logging.info("User logged in successfully: %s", email)
-            return True
+            return user
         logging.warning("Failed login attempt for email: %s", email)
         return False
     except Exception as e:
         logging.error(f"Error logging in user: {e}")
         return False
+    return user
+
+def find_info(email):
+    document = {
+        'email':email
+    }
+    result = users_collection.find_one(document)
+    print(result)
+    
+    return result

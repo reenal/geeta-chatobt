@@ -4,12 +4,16 @@ from src.mongo import *
 st.session_state.page = 'Login'
 st.subheader("Login Section")
 
-username = st.text_input("Username")
+username = st.text_input("Username", key='username')
 password = st.text_input("Password", type='password')
 
+
 if st.button("Login"):
-    if login_user(username, password):
+    user = login_user(username, password)
+    if user:
+        st.session_state['first_name'] = user['name'].split()[0]
         st.success("Logged In as {}".format(username))
+        st.experimental_set_query_params(page="pages/chat")
         st.switch_page('pages/chat.py')
         
     else:

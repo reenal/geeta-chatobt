@@ -13,7 +13,10 @@ new_password = st.text_input("Password", type='password')
 if st.button("Register"):
     registration_status = register_user(email, new_password, name, age, gender)
     if registration_status=='User registered successfully':
+        st.session_state['name'] = name.split()[0]
+        
         st.success("You have successfully created an account")
+        st.experimental_set_query_params(page="pages/login.py")
         st.switch_page('pages\login.py')
     else:
         st.warning(registration_status)

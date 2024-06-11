@@ -5,15 +5,10 @@ from src.helper import *
 from src.registration import *
 from src.mongo import *
 
-if 'first_name' in st.session_state:
-        st.write(f"Welcome, {st.session_state['first_name']}!")
-else:
-    st.warning("You need to log in first.")
-    st.experimental_set_query_params(page="pages/login")
     
 st.header("Chat with Shri Krishna 🌟")
   
-st.subheader(f"Hi, {st.session_state['first_name']}!, Seeking Guidance for Life's Questions")
+st.subheader(f"Hi, Guest! Seeking Guidance for Life's Questions")
 col1, col3 = st.columns(2)
 
 with col1:

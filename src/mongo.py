@@ -20,9 +20,6 @@ except Exception as e:
     logging.error('error while connecting mogodb')
     print(e)
 
-# Access the database and collection
-db = client["user_database"]
-users_collection = db["users"]
 
 
 db = client["chat_with_gita_db"]  # Database name
@@ -35,3 +32,4 @@ def store_in_mongodb(question, response):
         "response": response
     }
     collection.insert_one(document)
+    
