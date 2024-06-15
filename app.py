@@ -32,6 +32,7 @@ def main():
     
     with col1:
         if st.button("Register"):
+            
             logging.info("user press the register button")
             st.switch_page('pages/registration.py')
     
@@ -43,7 +44,7 @@ def main():
     with col3:
         if st.button("Guest Chat"):
             logging.info("user press the chat button")
-            st.switch_page('pages/guest_chat.py')
+            st.switch_page('pages/chat.py')
             
     logging.info('homepage load successfully')
 

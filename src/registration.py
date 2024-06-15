@@ -37,7 +37,7 @@ def verify_password(hashed_password, plain_password):
         raise
 
 # Registration
-def register_user(email, password, name, gender, age):
+def register_user(email, password, name, age, gender):
     try:
         if users_collection.find_one({"email": email}):
             logging.warning("Attempted to register with an existing email: %s", email)

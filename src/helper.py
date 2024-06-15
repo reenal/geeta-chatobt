@@ -14,6 +14,7 @@ from src.logger import *
 import requests
 import io
 from PIL import Image
+from langchain_community.document_loaders import PyPDFDirectoryLoader
 
 load_dotenv()
 api_key = os.getenv("GOOGLE_API_KEY")
@@ -21,6 +22,38 @@ GoogleGenerativeAIEmbeddings.api_key = api_key
 os.environ['LANGCHAIN_TRACING_V2'] = 'true'
 LANGCHAIN_API_KEY = os.getenv('LANGCHAIN_API_KEY')
 HuggingFace_API_KEY = os.getenv('HuggingFace_API_KEY')
+
+def read_documents_for_multiple_pdfs():
+    logging.info('read data directory all pdfs')
+    loader = PyPDFDirectoryLoader("data/")
+    docs = loader.load()
+    return docs
+
+
+def get_text_chunks_for_multiple_pdfs(text):
+    logging.info('chunking process started for the extracted text')
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=2000, chunk_overlap=200)
+    logging.info('chucking process done successfully')
+    split_text = text_splitter.split_documents(text)
+    return split_text
+
+
+def get_vector_store_for_multiple_pdfs(text_chunks):
+    logging.info("start storing embeeding into vector db")
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    vector_store = FAISS.from_documents(text_chunks, embedding=embeddings)
+    vector_store.save_local("faiss_index")
+    logging.info("storing embeeding into vector db done successfully in local folder")
+    return vector_store
+
+
+def create_embedding_for_multiple_pdfs():
+    logging.info('embedding process started')
+    text = read_documents_for_multiple_pdfs()
+    text_chunks = get_text_chunks_for_multiple_pdfs(text)
+    db = get_vector_store_for_multiple_pdfs(text_chunks=text_chunks)
+    logging.info('embedding process done successfully')
+    return db
 
 
 def get_file_text():
@@ -274,3 +307,37 @@ def inject_css():
     """
     st.markdown(custom_css, unsafe_allow_html=True)
 
+
+# Function to inject custom CSS and HTML for the header
+def display_logout_button():
+    st.markdown("""
+        <style>
+        .header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            position: fixed;
+            top: 10px;
+            right: 20px;
+            background: none;
+            padding: 0;
+            z-index: 1000;
+        }
+        .header button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .header button:hover {
+            background-color: #0056b3;
+        }
+        </style>
+        <div class="header">
+            <form action="/?" method="get">
+                <button name="logout">Logout</button>
+            </form>
+        </div>
+    """, unsafe_allow_html=True)

@@ -1,7 +1,12 @@
 import streamlit as st
 from src.mongo import *
-
+from src.session import *
 st.session_state.page = 'Register'
+if 'session_id' in st.session_state:
+        session_id = st.session_state['session_id']
+
+
+
 st.subheader("Create New Account")
 
 name = st.text_input('name')
@@ -11,6 +16,7 @@ email = st.text_input("email")
 new_password = st.text_input("Password", type='password')
 
 if st.button("Register"):
+    
     registration_status = register_user(email, new_password, name, age, gender)
     if registration_status=='User registered successfully':
         st.session_state['name'] = name.split()[0]
