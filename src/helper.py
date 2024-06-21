@@ -15,6 +15,7 @@ import requests
 import io
 from PIL import Image
 from langchain_community.document_loaders import PyPDFDirectoryLoader
+from src.session import *
 
 load_dotenv()
 api_key = os.getenv("GOOGLE_API_KEY")
@@ -128,43 +129,47 @@ def user_input(user_question):
     logging.info('llm model provide the response successfully')
     print(response)
     
-    parts = response.strip().split("\n\n")
-    reply = parts[0]
-    shlok = parts[1].replace("Shlok:  ", "")
-    meaning = parts[2].replace("Meaning: ", "")
-    example = parts[3].replace("Example: ", "")
-    logging.info("split the response in serperate variable for css container output")
-    inject_css()
+    try:
+        parts = response.strip().split("\n\n")
+        reply = parts[0]
+        shlok = parts[1].replace("Shlok:  ", "Shlok:  ")
+        meaning = parts[2].replace("Meaning: ", "Meaning:")
+        example = parts[3].replace("Example: ", "Example:")
+        logging.info("split the response in serperate variable for css container output")
+        inject_css()
 
-   
+    
 
-    # Create a container to display the response
-    with st.container():
-        st.markdown(f'<div class="box reply-box">{reply}</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="box shlok-box">{shlok}</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="box meaning-box">{meaning}</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="box example-box">{example}</div>', unsafe_allow_html=True)
- 
+        # Create a container to display the response
+        with st.container():
+            st.markdown(f'<div class="box reply-box">{reply}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="box shlok-box">{shlok}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="box meaning-box">{meaning}</div>', unsafe_allow_html=True)
+            st.markdown(f'<div class="box example-box">{example}</div>', unsafe_allow_html=True)
+            
+    except Exception as e:
+        logging.error(f"{e} so we print in simple format without any container")
+        st.write(response)
 
-        st.write("Generationg img for you...")
+    st.write("Generationg img for you...")
        
         # img_prompt = text_to_img_prompt(response=response)
-        logging.info("image generation started using huggingface api ")
+    logging.info("image generation started using huggingface api ")
+    try:
+        image = img_generator(img_prompt=example)
+        logging.info('Image generated successfully')
+        st.image(image)
+    except Exception as e:
+        logging.warning('Primary image generation failed, attempting alternative method')
+        logging.error(e)
         try:
-            image = img_generator(img_prompt=example)
-            logging.info('Image generated successfully')
+            image = img_generator_2(img_prompt=example)
+            logging.info('Image generated from alternative model successfully')
             st.image(image)
         except Exception as e:
-            logging.warning('Primary image generation failed, attempting alternative method')
+            st.error("Sorry for the inconvenience, but the server is down due to heavy traffic.")
             logging.error(e)
-            try:
-                image = img_generator_2(img_prompt=example)
-                logging.info('Image generated from alternative model successfully')
-                st.image(image)
-            except Exception as e:
-                st.error("Sorry for the inconvenience, but the server is down due to heavy traffic.")
-                logging.error(e)
-        
+    
 
     # Predict the next question
     next_question = predict_next_question(user_question)
@@ -317,7 +322,7 @@ def display_logout_button():
             justify-content: flex-end;
             align-items: center;
             position: fixed;
-            top: 10px;
+            top: 50px;
             right: 20px;
             background: none;
             padding: 0;

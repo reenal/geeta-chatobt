@@ -8,6 +8,8 @@ from src.mongo import *
 from pages import *
 from streamlit_option_menu import option_menu
 from src.logger import *
+from src.google_analytics import *
+
 
 logging.info('all imports successfully initiatied..')
 
@@ -27,6 +29,17 @@ def main():
     
     st.header("Chat with Bhagwat Geet 💭")
     st.subheader("Seeking Guidance for Life's Questions 📚")
+    inject_google_analytics()  # Inject GA code
+    inject_ga() # antoher method to check GA working or not
+    
+
+
+# Include Google Analytics tracking code
+    with open(r"src\google_analytics.html", "r") as f:
+        html_code = f.read()
+        components.html(html_code, height=0)
+
+
     st.image("assets/arjun.jpg")
     col1, col2, col3 = st.columns(3)
     
@@ -34,17 +47,17 @@ def main():
         if st.button("Register"):
             
             logging.info("user press the register button")
-            st.switch_page('pages/registration.py')
+            st.switch_page('pages/Registration.py')
     
     with col2:
         if st.button("Login"):
             logging.info("user press the login button")
-            st.switch_page('pages/login.py')
+            st.switch_page('pages/Login.py')
             
     with col3:
-        if st.button("Guest Chat"):
+        if st.button("Chat"):
             logging.info("user press the chat button")
-            st.switch_page('pages/chat.py')
+            st.switch_page('pages/Chat.py')
             
     logging.info('homepage load successfully')
 

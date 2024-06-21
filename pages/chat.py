@@ -5,6 +5,9 @@ from src.helper import *
 from src.registration import *
 from src.mongo import *
 from src.session import *
+from src.google_analytics import *
+
+
 
 if 'first_name' in st.session_state:
         st.write(f"Welcome, {st.session_state['first_name']}!")
@@ -13,28 +16,33 @@ if 'session_id' in st.session_state:
         session_id = st.session_state['session_id']
 else:
     st.warning("You need to log in first.")
-    st.experimental_set_query_params(page="pages/login")
+    # st.experimental_set_query_params(page="pages/login")
 
 
 
 
 # Display user info and logout button at the top
-if 'first_name' in st.session_state:
+if 'first_name' in st.session_state:    
     display_logout_button()
+    end_user_session(session_id,datetime.now())
 else:
     st.warning("You need to log in first.")
-    st.experimental_set_query_params(page="pages/login")
+    # st.experimental_set_query_params(page="pages/login")
     st.stop()
 
 if 'session_id' in st.session_state:
     session_id = st.session_state['session_id']
 else:
     st.warning("You need to log in first.")
-    st.experimental_set_query_params(page="pages/login")
+    # st.experimental_set_query_params(page="pages/login")
 
 st.header("Chat with Shri Krishna 🌟")
 
 st.subheader(f"Hi, {st.session_state['first_name']}!, Seeking Guidance for Life's Questions")
+inject_google_analytics()
+
+inject_ga() # antoher method to check GA working or not
+    
 col1, col3 = st.columns(2)
 
 with col1:
@@ -60,7 +68,7 @@ with col1:
 with col3:
     if st.button('Create New Embeddings'):
         st.write('Creating new embeddings...')
-        embeddings = create_embedding_for_multiple_pdfs()
+        embeddings = create_embedding()
         log_action(session_id, 'click', {'element': 'button#Create New Embeddings'})
         st.write('Embeddings created successfully!')
 
