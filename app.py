@@ -30,7 +30,7 @@ def main():
     st.header("Chat with Bhagwat Geet 💭")
     st.subheader("Seeking Guidance for Life's Questions 📚")
     inject_google_analytics()  # Inject GA code
-    inject_ga() # antoher method to check GA working or not
+    # inject_ga() # antoher method to check GA working or not
     
 
 

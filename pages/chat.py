@@ -41,7 +41,7 @@ st.header("Chat with Shri Krishna 🌟")
 st.subheader(f"Hi, {st.session_state['first_name']}!, Seeking Guidance for Life's Questions")
 inject_google_analytics()
 
-inject_ga() # antoher method to check GA working or not
+# inject_ga() # antoher method to check GA working or not
     
 col1, col3 = st.columns(2)
 

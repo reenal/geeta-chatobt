@@ -6,7 +6,7 @@ from src.google_analytics import *
 st.session_state.page = 'Login'
 st.subheader("Login Section")
 inject_google_analytics()
-inject_ga() # antoher method to check GA working or not
+# inject_ga() # antoher method to check GA working or not
     
 
 username = st.text_input("Username", key='username')

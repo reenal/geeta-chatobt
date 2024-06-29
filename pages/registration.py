@@ -13,7 +13,7 @@ if 'session_id' in st.session_state:
 
 st.subheader("Create New Account")
 inject_google_analytics()
-inject_ga() # antoher method to check GA working or not
+# inject_ga() # antoher method to check GA working or not
     
 name = st.text_input('name')
 age = st.number_input('age', min_value=0, max_value=100, step=1)
